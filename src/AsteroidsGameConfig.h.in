@@ -1,0 +1,5 @@
+#define AsteroidsGame_VERSION_MAJOR @AsteroidsGame_VERSION_MAJOR@
+#define AsteroidsGame_VERSION_MINOR @AsteroidsGame_VERSION_MINOR@
+#define AsteroidsGame_VERSION_PATCH @AsteroidsGame_VERSION_PATCH@
+#define AsteroidsGame_DEBUG @AsteroidsGame_DEBUG@
+#define AsteroidsGame_Target_FPS 60.0f
