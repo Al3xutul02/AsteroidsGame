@@ -4,7 +4,7 @@
 
 Application* EntityManager::mApp = nullptr;
 
-uint64_t EntityManager::entityCount = 0;
+uint64_t EntityManager::mEntityCount = 0;
 std::unordered_map<size_t, std::unique_ptr<IComponentPool>> EntityManager::mComponentPools =
     std::unordered_map<size_t, std::unique_ptr<IComponentPool>>();
 std::unordered_set<uint64_t> EntityManager::mDestroyBuffer = std::unordered_set<uint64_t>();
@@ -51,11 +51,11 @@ void EntityManager::Shutdown() {
 }
 
 uint64_t EntityManager::CreateEntity() {
-    return entityCount++;
+    return mEntityCount++;
 }
 
 uint64_t EntityManager::CreateEntity(uint64_t parentEntityId) {
-    uint64_t newEntityId = entityCount++;
+    uint64_t newEntityId = mEntityCount++;
     
     mEntityParentMap[newEntityId] = parentEntityId;
     mEntityChildMap[parentEntityId].insert(newEntityId);

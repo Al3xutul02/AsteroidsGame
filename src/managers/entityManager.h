@@ -38,7 +38,7 @@ public:
 
 private:
     static Application* mApp;
-    static uint64_t entityCount;
+    static uint64_t mEntityCount;
     static std::unordered_map<uint64_t, uint64_t> mEntityParentMap;
     static std::unordered_map<uint64_t, std::set<uint64_t>> mEntityChildMap;
 
