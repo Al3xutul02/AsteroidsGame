@@ -31,7 +31,7 @@ configure_file(src/AsteroidsGameConfig.h.in src/AsteroidsGameConfig.h)
 target_include_directories(AsteroidsGame PUBLIC "${PROJECT_BINARY_DIR}/src")
 
 # SDL3 basic library
-add_subdirectory(SDL EXCLUDE_FROM_ALL)
+add_subdirectory(external/SDL EXCLUDE_FROM_ALL)
 
 # SDL3_image library
 set(SDLIMAGE_VENDORED ON)
@@ -39,7 +39,7 @@ set(SDLIMAGE_AVIF OFF)	# disable formats we don't use to make the build faster a
 set(SDLIMAGE_BMP OFF)
 set(SDLIMAGE_JPEG OFF)
 set(SDLIMAGE_WEBP OFF)
-add_subdirectory(SDL_image EXCLUDE_FROM_ALL)
+add_subdirectory(external/SDL_image EXCLUDE_FROM_ALL)
 
 # Link all external libraries
 target_link_libraries(AsteroidsGame PRIVATE 
