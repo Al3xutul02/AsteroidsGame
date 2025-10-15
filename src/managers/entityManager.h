@@ -2,6 +2,7 @@
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
+#include <set>
 #include <typeindex>
 #include <typeinfo>
 #include <memory>
@@ -26,7 +27,7 @@ public:
     static void DestroyEntity(uint64_t entityId);
 
     static std::optional<uint64_t> GetParentEntity(uint64_t entityId);
-    static std::vector<uint64_t>* GetChildrenEntities(uint64_t entityId);
+    static std::set<uint64_t>* GetChildrenEntities(uint64_t entityId);
 
     template <class T>
     static void AddComponent(uint64_t entityId, const T& component);
@@ -39,7 +40,7 @@ private:
     static Application* mApp;
     static uint64_t entityCount;
     static std::unordered_map<uint64_t, uint64_t> mEntityParentMap;
-    static std::unordered_map<uint64_t, std::vector<uint64_t>> mEntityChildMap;
+    static std::unordered_map<uint64_t, std::set<uint64_t>> mEntityChildMap;
 
     static std::unordered_set<uint64_t> mDestroyBuffer;
     static std::unordered_map<size_t, std::unique_ptr<IComponentPool>> mComponentPools;
