@@ -22,27 +22,27 @@ public:
     static void Update(float deltaTime);
     static void Shutdown();
 
-    static uint64_t CreateEntity();
-    static uint64_t CreateEntity(uint64_t parentEntityId);
-    static void DestroyEntity(uint64_t entityId);
+    static uint32_t CreateEntity();
+    static uint32_t CreateEntity(uint32_t parentEntityId);
+    static void DestroyEntity(uint32_t entityId);
 
-    static std::optional<uint64_t> GetParentEntity(uint64_t entityId);
-    static std::set<uint64_t>* GetChildrenEntities(uint64_t entityId);
+    static std::optional<uint32_t> GetParentEntity(uint32_t entityId);
+    static std::set<uint32_t>* GetChildrenEntities(uint32_t entityId);
 
     template <class T>
-    static void AddComponent(uint64_t entityId, const T& component);
+    static void AddComponent(uint32_t entityId, const T& component);
     template <class T>
-    static T* GetComponent(uint64_t entityId);
+    static T* GetComponent(uint32_t entityId);
     template <class T>
-    static void DestroyComponent(uint64_t entityId);
+    static void DestroyComponent(uint32_t entityId);
 
 private:
     static Application* mApp;
-    static uint64_t mEntityCount;
-    static std::unordered_map<uint64_t, uint64_t> mEntityParentMap;
-    static std::unordered_map<uint64_t, std::set<uint64_t>> mEntityChildMap;
+    static uint32_t mEntityCount;
+    static std::unordered_map<uint32_t, uint32_t> mEntityParentMap;
+    static std::unordered_map<uint32_t, std::set<uint32_t>> mEntityChildMap;
 
-    static std::unordered_set<uint64_t> mDestroyBuffer;
+    static std::unordered_set<uint32_t> mDestroyBuffer;
     static std::unordered_map<size_t, std::unique_ptr<IComponentPool>> mComponentPools;
 
     static void ClearBuffer();

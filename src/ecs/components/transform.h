@@ -31,7 +31,7 @@ struct Transform : Component {
         Angle(angle), Velocity(velocity), Acceleration(acceleration) {}
     } Rotation, GlobalRotation;
 
-    Transform(uint64_t ownerId, bool inheritsParentTransform = true,
+    Transform(uint32_t ownerId, bool inheritsParentTransform = true,
         const Math::Vector2& locationPosition = Math::Vector2::Zero,
         const Math::Vector2& locationVelocity = Math::Vector2::Zero,
         const Math::Vector2& locationAcceleration = Math::Vector2::Zero,

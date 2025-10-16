@@ -2,9 +2,9 @@
 
 struct Component {
 public:
-    uint64_t OwnerId;
+    uint32_t OwnerId;
     bool Enabled;
 
-    inline Component(uint64_t ownerId) : OwnerId(ownerId), Enabled(true) {}
+    inline Component(uint32_t ownerId) : OwnerId(ownerId), Enabled(true) {}
     virtual ~Component() = default;
 };

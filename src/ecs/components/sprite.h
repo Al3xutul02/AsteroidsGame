@@ -15,7 +15,7 @@ struct Sprite : Component {
     uint8_t DrawOrder;
     float Opacity;
 
-    inline Sprite(uint64_t ownerId,
+    inline Sprite(uint32_t ownerId,
         const SDL_Rect& destination,
         const std::string& filePath,
         float angleOffset = 0.0f,

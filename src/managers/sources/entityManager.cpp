@@ -4,12 +4,12 @@
 
 Application* EntityManager::mApp = nullptr;
 
-uint64_t EntityManager::mEntityCount = 0;
+uint32_t EntityManager::mEntityCount = 0;
 std::unordered_map<size_t, std::unique_ptr<IComponentPool>> EntityManager::mComponentPools =
     std::unordered_map<size_t, std::unique_ptr<IComponentPool>>();
-std::unordered_set<uint64_t> EntityManager::mDestroyBuffer = std::unordered_set<uint64_t>();
-std::unordered_map<uint64_t, uint64_t> EntityManager::mEntityParentMap = std::unordered_map<uint64_t, uint64_t>();
-std::unordered_map<uint64_t, std::set<uint64_t>> EntityManager::mEntityChildMap = std::unordered_map<uint64_t, std::set<uint64_t>>();
+std::unordered_set<uint32_t> EntityManager::mDestroyBuffer = std::unordered_set<uint32_t>();
+std::unordered_map<uint32_t, uint32_t> EntityManager::mEntityParentMap = std::unordered_map<uint32_t, uint32_t>();
+std::unordered_map<uint32_t, std::set<uint32_t>> EntityManager::mEntityChildMap = std::unordered_map<uint32_t, std::set<uint32_t>>();
 
 void EntityManager::Initialize(Application* app) {
     mApp = app;
@@ -50,12 +50,12 @@ void EntityManager::Shutdown() {
     mApp = nullptr;
 }
 
-uint64_t EntityManager::CreateEntity() {
+uint32_t EntityManager::CreateEntity() {
     return mEntityCount++;
 }
 
-uint64_t EntityManager::CreateEntity(uint64_t parentEntityId) {
-    uint64_t newEntityId = mEntityCount++;
+uint32_t EntityManager::CreateEntity(uint32_t parentEntityId) {
+    uint32_t newEntityId = mEntityCount++;
     
     mEntityParentMap[newEntityId] = parentEntityId;
     mEntityChildMap[parentEntityId].insert(newEntityId);
@@ -63,12 +63,12 @@ uint64_t EntityManager::CreateEntity(uint64_t parentEntityId) {
     return newEntityId;
 }
 
-void EntityManager::DestroyEntity(uint64_t entityId) {
+void EntityManager::DestroyEntity(uint32_t entityId) {
     std::queue<uint64_t> deletionQueue;
     deletionQueue.push(entityId);
 
     while (!deletionQueue.empty()) {
-        uint64_t currentId = deletionQueue.front();
+        uint32_t currentId = deletionQueue.front();
         deletionQueue.pop();
 
         if (mDestroyBuffer.find(currentId) != mDestroyBuffer.end()) {
@@ -78,21 +78,21 @@ void EntityManager::DestroyEntity(uint64_t entityId) {
         mDestroyBuffer.insert(currentId);
         auto it = mEntityChildMap.find(currentId);
         if (it != mEntityChildMap.end()) {
-            for (uint64_t childId : it->second) {
+            for (uint32_t childId : it->second) {
                 deletionQueue.push(childId);
             }
         }
     }
 }
 
-std::optional<uint64_t> EntityManager::GetParentEntity(uint64_t entityId) {
+std::optional<uint32_t> EntityManager::GetParentEntity(uint32_t entityId) {
     auto it = mEntityParentMap.find(entityId);
     if (it == mEntityParentMap.end()) { return std::nullopt; }
 
-    return std::optional<uint64_t>(it->second);
+    return std::optional<uint32_t>(it->second);
 }
 
-std::set<uint64_t>* EntityManager::GetChildrenEntities(uint64_t entityId) {
+std::set<uint32_t>* EntityManager::GetChildrenEntities(uint32_t entityId) {
     auto it = mEntityChildMap.find(entityId);
     if (it == mEntityChildMap.end()) { return nullptr; }
 
@@ -100,12 +100,12 @@ std::set<uint64_t>* EntityManager::GetChildrenEntities(uint64_t entityId) {
 }
 
 void EntityManager::ClearBuffer() {
-    for (uint64_t entityId : mDestroyBuffer) {
+    for (uint32_t entityId : mDestroyBuffer) {
         for (auto& [typeHash, componentPool] : mComponentPools) {
             componentPool->Remove(entityId);
         }
 
-        std::optional<uint64_t> parentId = GetParentEntity(entityId);
+        std::optional<uint32_t> parentId = GetParentEntity(entityId);
         if (parentId.has_value()) {
             GetChildrenEntities(parentId.value())->erase(entityId);
             mEntityParentMap.erase(entityId);

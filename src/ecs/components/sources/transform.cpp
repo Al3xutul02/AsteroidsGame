@@ -5,7 +5,7 @@
 #include <numbers>
 #include "../../../managers/entityManager.h"
 
-Transform::Transform(uint64_t ownerId, bool inheritsParentTransform,
+Transform::Transform(uint32_t ownerId, bool inheritsParentTransform,
 const Math::Vector2& locationPosition,
 const Math::Vector2& locationVelocity,
 const Math::Vector2& locationAcceleration,
@@ -15,7 +15,7 @@ float rotationAcceleration) : Component(ownerId), InheritsParentTransform(inheri
 Location(locationPosition, locationVelocity, locationAcceleration),
 Rotation(rotationAngle, rotationVelocity, rotationAcceleration),
 GlobalLocation(), GlobalRotation() {
-    std::optional<uint64_t> parent = EntityManager::GetParentEntity(ownerId);
+    std::optional<uint32_t> parent = EntityManager::GetParentEntity(ownerId);
     if (!parent.has_value()) {
         this->GlobalLocation = this->Location;
         this->GlobalRotation = this->Rotation;
@@ -56,7 +56,7 @@ void Transform::Update(std::vector<Transform>& transforms, float deltaTime) {
             if (!transform->Enabled) { continue; }
             ApplyLocalKinematics(transform, deltaTime);
             
-            std::optional<uint64_t> parentId = EntityManager::GetParentEntity(transform->OwnerId);
+            std::optional<uint32_t> parentId = EntityManager::GetParentEntity(transform->OwnerId);
             if (parentId.has_value() && transform->InheritsParentTransform) {
                 Transform* parentTransform = EntityManager::GetComponent<Transform>(parentId.value());
                 if (parentTransform != nullptr) {
@@ -106,7 +106,7 @@ static void CalculateHierarchyDepths(
 
     for (Transform& transform : transforms) {
         uint8_t depth = 0;
-        std::optional<uint64_t> parent = EntityManager::GetParentEntity(transform.OwnerId);
+        std::optional<uint32_t> parent = EntityManager::GetParentEntity(transform.OwnerId);
         
         while(parent.has_value() && depth < depthLimit) {
             depth++;

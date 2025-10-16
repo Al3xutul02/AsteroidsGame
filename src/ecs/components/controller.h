@@ -16,7 +16,7 @@ struct Controller : Component {
     float Acceleration;
     float DragCoefficient;
 
-    inline Controller(uint64_t ownerId,
+    inline Controller(uint32_t ownerId,
         const std::unordered_map<Key, Control>& keyMap,
         float maxMovementSpeed,
         float acceleration,

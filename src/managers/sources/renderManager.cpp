@@ -43,28 +43,30 @@ void RenderManager::Draw() {
     SDL_RenderClear(mRenderer);
 
     if (mSprites != nullptr) {
-        std::map<uint8_t, Sprite*> orderedSprites;
-        for (Sprite& sprite : *mSprites) { orderedSprites[sprite.DrawOrder] = &sprite; }
+        std::map<uint8_t, std::vector<Sprite*>> orderedSprites;
+        for (Sprite& sprite : *mSprites) { orderedSprites[sprite.DrawOrder].push_back(&sprite); }
 
-        for (auto& [order, sprite] : orderedSprites) {
-            if (!sprite->Enabled) { continue; }
+        for (auto& [order, sprites] : orderedSprites) {
+            for (Sprite* const sprite : sprites) {
+                if (!sprite->Enabled) { continue; }
 
-            SDL_FRect fDestination;
-            SDL_RectToFRect(&sprite->Destination, &fDestination);
-            
-            SDL_SetTextureAlphaModFloat(mTextureMap[sprite->FilePath], sprite->Opacity);
-            bool success = SDL_RenderTextureRotated(
-                mRenderer,
-                mTextureMap[sprite->FilePath],
-                NULL,
-                &fDestination,
-                sprite->AngleOffset + sprite->Angle,
-                NULL,
-                sprite->FlipMode
-            );
-            if (!success) {
-                std::cout << "Error while rendering texture: " << SDL_GetError() << '\n';
-                continue;
+                SDL_FRect fDestination;
+                SDL_RectToFRect(&sprite->Destination, &fDestination);
+                
+                SDL_SetTextureAlphaModFloat(mTextureMap[sprite->FilePath], sprite->Opacity);
+                bool success = SDL_RenderTextureRotated(
+                    mRenderer,
+                    mTextureMap[sprite->FilePath],
+                    NULL,
+                    &fDestination,
+                    sprite->AngleOffset + sprite->Angle,
+                    NULL,
+                    sprite->FlipMode
+                );
+                if (!success) {
+                    std::cout << "Error while rendering texture: " << SDL_GetError() << '\n';
+                    continue;
+                }
             }
         }
     }

@@ -19,15 +19,15 @@ public:
     static inline float GetCurrentFPS() { return 1 / mDeltaTime; }
     static inline void SetTargetFPS(float targetFPS) { mTargetFPS = targetFPS; }
 
-    static uint64_t CreateTimer(float limit);
-    static bool TimerExists(uint64_t timerId);
-    static std::optional<TimerStatus> GetTimerStatus(uint64_t timerId);
-    static void StartTimer(uint64_t timerId);
-    static void PauseTimer(uint64_t timerId);
-    static void StopTimer(uint64_t timerId);
-    static void SetTimerLimit(uint64_t timerId, float limit);
-    static void SetTimerCurrentTime(uint64_t timerId, float currentTime);
-    static void DestroyTimer(uint64_t timerId);
+    static uint32_t CreateTimer(float limit);
+    static bool TimerExists(uint32_t timerId);
+    static std::optional<TimerStatus> GetTimerStatus(uint32_t timerId);
+    static void StartTimer(uint32_t timerId);
+    static void PauseTimer(uint32_t timerId);
+    static void StopTimer(uint32_t timerId);
+    static void SetTimerLimit(uint32_t timerId, float limit);
+    static void SetTimerCurrentTime(uint32_t timerId, float currentTime);
+    static void DestroyTimer(uint32_t timerId);
 
 private:
     struct Timer {
@@ -46,8 +46,8 @@ private:
     static float mDeltaTime;
     static uint64_t mTicksCount;
 
-    static uint64_t mTimerCount;
-    static uint64_t mLastId;
-    static std::unordered_map<uint64_t, uint64_t> mTimerIdMap;
+    static uint32_t mTimerCount;
+    static uint32_t mLastId;
+    static std::unordered_map<uint32_t, uint32_t> mTimerIdMap;
     static std::vector<Timer> mTimers;
 };

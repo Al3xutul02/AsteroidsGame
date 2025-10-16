@@ -2,21 +2,21 @@
 #include "../entityManager.h"
 
 template <class T>
-void EntityManager::AddComponent(uint64_t entityId, const T& component) {
+void EntityManager::AddComponent(uint32_t entityId, const T& component) {
     ComponentPool<T>* pool = GetPool<T>();
     if (pool == nullptr) { return; }
     pool->Add(entityId, component);
 }
 
 template <class T>
-T* EntityManager::GetComponent(uint64_t entityId) {
+T* EntityManager::GetComponent(uint32_t entityId) {
     ComponentPool<T>* pool = GetPool<T>();
     if (pool == nullptr) { return nullptr; }
     return pool->Get(entityId);
 }
 
 template <class T>
-void EntityManager::DestroyComponent(uint64_t entityId) {
+void EntityManager::DestroyComponent(uint32_t entityId) {
     ComponentPool<T>* pool = GetPool<T>();
     if (pool == nullptr) { return; }
     pool->Remove(entityId);
