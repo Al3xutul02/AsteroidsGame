@@ -20,7 +20,8 @@ set(SOURCES src/application.cpp src/application.h
   src/ecs/components/abstractions/component.h
   src/ecs/components/transform.h src/ecs/components/sources/transform.cpp
   src/ecs/components/sprite.h src/ecs/components/sources/sprite.cpp
-  src/ecs/components/controller.h src/ecs/components/sources/controller.cpp)
+  src/ecs/components/controller.h src/ecs/components/sources/controller.cpp
+  src/ecs/components/collider.h src/ecs/components/sources/collider.cpp)
 
 set(gcc_like_cxx "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU,LCC>")
 set(msvc_cxx "$<COMPILE_LANG_AND_ID:CXX,MSVC>")

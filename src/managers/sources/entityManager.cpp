@@ -17,6 +17,7 @@ void EntityManager::Initialize(Application* app) {
     RegisterComponentType<Transform>();
     RegisterComponentType<Sprite>();
     RegisterComponentType<Controller>();
+    RegisterComponentType<Collider>();
 }
 
 void EntityManager::Update(float deltaTime) {
@@ -36,6 +37,13 @@ void EntityManager::Update(float deltaTime) {
         ComponentPool<Sprite>* sprites = GetPool<Sprite>();
         if (sprites) {
             sprites->UpdateContents(Sprite::Update, deltaTime);
+        }
+    }));
+
+    transformDependencyStage.push_back(std::async(std::launch::async, [deltaTime]() {
+        ComponentPool<Collider>* colliders = GetPool<Collider>();
+        if (colliders) {
+            colliders->UpdateContents(Collider::Update, deltaTime);
         }
     }));
 

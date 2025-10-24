@@ -6,6 +6,7 @@
 #include "ecs/components/transform.h"
 #include "ecs/components/sprite.h"
 #include "ecs/components/controller.h"
+#include "ecs/components/collider.h"
 
 bool Application::Initialize(float targetFPS) {
     this->InitializeEvents();
@@ -17,7 +18,7 @@ bool Application::Initialize(float targetFPS) {
     RenderManager::Initialize(this, this->mWindow);
 
     // Test entity
-    uint64_t ship = EntityManager::CreateEntity();
+    uint32_t ship = EntityManager::CreateEntity();
     Transform transform = Transform(ship, false,
         Math::Vector2(250, 250)
     );
@@ -47,12 +48,19 @@ bool Application::Initialize(float targetFPS) {
         500.0f, 1000.0f, 0.035f
     );
 
+    auto tags = std::vector<Collider::Tag>({Collider::Tag::Player});
+    Collider collider = Collider(ship,
+        tags,
+        0, 24.0f
+    );
+
     EntityManager::AddComponent<Transform>(ship, transform);
     EntityManager::AddComponent<Sprite>(ship, sprite);
     EntityManager::AddComponent<Controller>(ship, controller);
+    EntityManager::AddComponent<Collider>(ship, collider);
 
     // Test debug sprite
-    uint64_t debugSprite = EntityManager::CreateEntity(ship);
+    uint32_t debugSprite = EntityManager::CreateEntity(ship);
     Transform dTransform = Transform(debugSprite, true,
         Math::Vector2(0, 0)
     );
@@ -71,6 +79,34 @@ bool Application::Initialize(float targetFPS) {
 
     EntityManager::AddComponent<Transform>(debugSprite, dTransform);
     EntityManager::AddComponent<Sprite>(debugSprite, dSprite);
+
+    // Test collider
+    uint32_t colliderEntity = EntityManager::CreateEntity();
+    Transform cTransform = Transform(colliderEntity, false,
+        Math::Vector2(500, 500)
+    );
+
+    SDL_Rect colliderDest = SDL_Rect {
+        (int)cTransform.GlobalLocation.Position.x - 96,
+        (int)cTransform.GlobalLocation.Position.y - 96,
+        (int)(96), (int)(96)
+    };
+    Sprite cSprite = Sprite(colliderEntity,
+        colliderDest,
+        "./DebugCircle.png",
+        0.0f, 0.0f, SDL_FLIP_NONE,
+        1, 0.5f
+    );
+
+    tags = std::vector<Collider::Tag>({Collider::Tag::Enemy});
+    Collider cCollider = Collider(colliderEntity,
+        tags,
+        0, 48.0f
+    );
+
+    EntityManager::AddComponent<Transform>(colliderEntity, cTransform);
+    EntityManager::AddComponent<Sprite>(colliderEntity, cSprite);
+    EntityManager::AddComponent<Collider>(colliderEntity, cCollider);
 
     RenderManager::LoadTextures({
         "./Ship.png",
