@@ -21,7 +21,7 @@ static void CreateSnapshots(
 
 static bool CheckCollision(const CollisionSnapshot& a, const CollisionSnapshot& b);
 
-static uint64_t GetSpatialHashKey(int x, int y);
+static uint64_t GetSpatialHashKey(int gridX, int gridY);
 
 void Collider::Update(std::vector<Collider>& colliders, float deltaTime) {
     std::unordered_map<uint64_t, std::vector<CollisionSnapshot*>> spatialMap;
@@ -113,6 +113,7 @@ static bool CheckCollision(const CollisionSnapshot& a, const CollisionSnapshot& 
     return distanceSquared <= radiiSumSq;
 }
 
-static uint64_t GetSpatialHashKey(int x, int y) {
-    return (static_cast<uint64_t>(x) << 32) | (static_cast<uint64_t>(y));
+static uint64_t GetSpatialHashKey(int gridX, int gridY) {
+    return (static_cast<uint64_t>(static_cast<uint32_t>(gridX)) << 32) | 
+           (static_cast<uint64_t>(static_cast<uint32_t>(gridY)));
 }
