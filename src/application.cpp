@@ -51,7 +51,11 @@ bool Application::Initialize(float targetFPS) {
     auto tags = std::vector<Collider::Tag>({Collider::Tag::Player});
     Collider collider = Collider(ship,
         tags,
-        0, 24.0f
+        0, 24.0f,
+        std::function<void(Collider* self, Collider* other)>([](Collider* self, Collider* other) {
+            std::cout << "Collider event triggered on Entity " << self->OwnerId
+                      << " by Entity " << other->OwnerId << '\n';
+        })
     );
 
     EntityManager::AddComponent<Transform>(ship, transform);
@@ -101,7 +105,11 @@ bool Application::Initialize(float targetFPS) {
     tags = std::vector<Collider::Tag>({Collider::Tag::Enemy});
     Collider cCollider = Collider(colliderEntity,
         tags,
-        0, 48.0f
+        0, 48.0f,
+        std::function<void(Collider* self, Collider* other)>([](Collider* self, Collider* other) {
+            std::cout << "Collider event triggered on Entity " << self->OwnerId
+                      << " by Entity " << other->OwnerId << '\n';
+        })
     );
 
     EntityManager::AddComponent<Transform>(colliderEntity, cTransform);

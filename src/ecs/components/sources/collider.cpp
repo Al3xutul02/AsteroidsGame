@@ -4,11 +4,12 @@
 #include "../../../managers/entityManager.h"
 
 struct CollisionSnapshot {
+    Collider* Origin;
     uint32_t OwnerId;
     Math::Vector2 GlobalPosition;
-    std::vector<Collider::Tag> Tags;
     uint8_t Layer;
     float Radius;
+    std::function<void(Collider* self, Collider* other)> OnCollision;
 };
 
 static const uint8_t CellSize = 64;
@@ -50,6 +51,7 @@ void Collider::Update(std::vector<Collider>& colliders, float deltaTime) {
                     if (CheckCollision(snapshotA, *snapshotB)) {
                         std::cout << "Collision between Entity " << snapshotA.OwnerId 
                                     << " and Entity " << snapshotB->OwnerId << "\n";
+                        snapshotA.OnCollision(snapshotA.Origin, snapshotB->Origin);
                     }
                 }
             }
@@ -72,14 +74,15 @@ static void CreateSnapshots(
         if (!collider.Enabled) { continue; }
 
         snapshots.push_back(CollisionSnapshot{
+            &collider,
             collider.OwnerId,
             transform->GlobalLocation.Position,
-            collider.Tags,
             collider.Layer,
-            collider.Radius
+            collider.Radius,
+            collider.OnCollision
         });
         CollisionSnapshot* snapshotPtr = &snapshots.back();
-        
+
         const float R = snapshotPtr->Radius;
         const float x = snapshotPtr->GlobalPosition.x;
         const float y = snapshotPtr->GlobalPosition.y;
@@ -99,6 +102,8 @@ static void CreateSnapshots(
 }
 
 static bool CheckCollision(const CollisionSnapshot& a, const CollisionSnapshot& b) {
+    if (a.Layer != b.Layer) return false;
+
     const Math::Vector2 distance = a.GlobalPosition - b.GlobalPosition;
     const float distanceSquared = Math::LengthSqr(distance);
 
