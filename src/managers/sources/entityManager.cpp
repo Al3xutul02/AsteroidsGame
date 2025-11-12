@@ -18,6 +18,7 @@ void EntityManager::Initialize(Application* app) {
     RegisterComponentType<Sprite>();
     RegisterComponentType<Controller>();
     RegisterComponentType<Collider>();
+    RegisterComponentType<Spawner>();
 }
 
 void EntityManager::Update(float deltaTime) {
@@ -26,6 +27,11 @@ void EntityManager::Update(float deltaTime) {
     ComponentPool<Controller>* controllers = GetPool<Controller>();
     if (controllers) {
         controllers->UpdateContents(Controller::Update, deltaTime);
+    }
+
+    ComponentPool<Spawner>* spawners = GetPool<Spawner>();
+    if (spawners) {
+        spawners->UpdateContents(Spawner::Update, deltaTime);
     }
 
     ComponentPool<Transform>* transforms = GetPool<Transform>();

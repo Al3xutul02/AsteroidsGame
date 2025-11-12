@@ -34,7 +34,7 @@ bool Application::Initialize(float targetFPS) {
     };
     Sprite cSprite = Sprite(colliderEntity,
         colliderDest,
-        "./DebugCircle.png",
+        "./resources/DebugCircle.png",
         0.0f, 0.0f, SDL_FLIP_NONE,
         1, 0.5f
     );
@@ -54,8 +54,9 @@ bool Application::Initialize(float targetFPS) {
     EntityManager::AddComponent<Collider>(colliderEntity, cCollider);
 
     RenderManager::LoadTextures({
-        "./Ship.png",
-        "./DebugCircle.png"
+        "./resources/Ship.png",
+        "./resources/DebugCircle.png",
+        "./resources/Asteroids.png"
     });
 
     this->isRunning = success;

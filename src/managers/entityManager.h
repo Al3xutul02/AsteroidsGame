@@ -13,6 +13,7 @@
 #include "../ecs/components/sprite.h"
 #include "../ecs/components/controller.h"
 #include "../ecs/components/collider.h"
+#include "../ecs/components/spawner.h"
 #include "../ecs/components/abstractions/component.h"
 
 class Application;

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 4.1.2)
-project(AsteroidsGame VERSION 0.4.1 LANGUAGES C CXX)
+project(AsteroidsGame VERSION 0.4.2 LANGUAGES C CXX)
 
 # ----------------------------------------
 # General setup
