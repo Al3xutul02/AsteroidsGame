@@ -30,6 +30,7 @@ set(SOURCES src/application.cpp src/application.h
   src/ecs/components/sprite.h src/ecs/components/sources/sprite.cpp
   src/ecs/components/controller.h src/ecs/components/sources/controller.cpp
   src/ecs/components/collider.h src/ecs/components/sources/collider.cpp
+  src/ecs/components/spawner.h src/ecs/components/sources/spawner.cpp
   src/builders/entityBuilder.h src/builders/sources/entityBuilder.cpp)
 
 # ----------------------------------------

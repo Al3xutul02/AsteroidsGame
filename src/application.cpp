@@ -44,14 +44,26 @@ bool Application::Initialize(float targetFPS) {
         tags,
         0, 48.0f,
         std::function<void(Collider* self, Collider* other)>([](Collider* self, Collider* other) {
-            std::cout << "Collider event triggered on Entity " << self->OwnerId
+            if (std::find(other->Tags.begin(), other->Tags.end(), Collider::Tag::Player) != other->Tags.end()) {
+                std::cout << "Collider event triggered on Entity " << self->OwnerId
                       << " by Entity " << other->OwnerId << '\n';
+            }
         })
     );
 
     EntityManager::AddComponent<Transform>(colliderEntity, cTransform);
     EntityManager::AddComponent<Sprite>(colliderEntity, cSprite);
     EntityManager::AddComponent<Collider>(colliderEntity, cCollider);
+
+    // Asteroid Spawner
+    uint32_t asteroidsSpawner = EntityManager::CreateEntity();
+
+    Spawner spawner = Spawner(asteroidsSpawner, this->mWindow,
+        Math::Vector2(100, 200), Math::Vector2(-30, 30), Math::Vector2(10, 30),
+        100.0f, 0.5f
+    );
+
+    EntityManager::AddComponent<Spawner>(asteroidsSpawner, spawner);
 
     RenderManager::LoadTextures({
         "./resources/Ship.png",

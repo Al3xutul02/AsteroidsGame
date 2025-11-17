@@ -7,16 +7,23 @@
 #include "../../managers/timeManager.h"
 
 struct Spawner : Component {
-    uint32_t ScreenWidth;
-    uint32_t ScreenHeight;
-    uint32_t SpawnOffset;
+    SDL_Window* Window;
+    Math::Vector2 SpawnSpeed;
+    Math::Vector2 DirectionOffsetAngle;
+    Math::Vector2 RotationSpeed;
+    float SpawnOffset;
     float SpawnTime;
     uint32_t TimerId;
 
     inline Spawner(uint32_t ownerId,
-        uint32_t screenWidth, uint32_t screenHeight,
-        uint32_t spawnOffset, float spawnTime) : Component(ownerId),
-        ScreenWidth(screenWidth), ScreenHeight(screenHeight),
+        SDL_Window* window,
+        const Math::Vector2& spawnSpeed,
+        const Math::Vector2& directionOffsetAngle,
+        const Math::Vector2& rotationSpeed,
+        float spawnOffset, float spawnTime) : Component(ownerId),
+        Window(window),
+        SpawnSpeed(spawnSpeed), DirectionOffsetAngle(directionOffsetAngle),
+        RotationSpeed(rotationSpeed),
         SpawnOffset(spawnOffset), SpawnTime(spawnTime), TimerId(TimeManager::CreateTimer(spawnTime)) {}
 
     static void Update(std::vector<Spawner>& spawners, float deltaTime);

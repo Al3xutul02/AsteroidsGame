@@ -64,6 +64,7 @@ void TimeManager::StartTimer(uint32_t timerId) {
     if (!TimerExists(timerId)) { return; }
 
     mTimers[mTimerIdMap[timerId]].Status = TimerStatus::Running;
+    mTimers[mTimerIdMap[timerId]].CurrentTime = 0.0f;
 }
 
 void TimeManager::PauseTimer(uint32_t timerId) {

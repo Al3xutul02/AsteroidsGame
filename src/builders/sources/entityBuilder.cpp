@@ -1,7 +1,13 @@
 #include "../entityBuilder.h"
 
-uint32_t EntityBuilder::CreateShip() {
-    uint32_t ship = EntityManager::CreateEntity();
+uint32_t EntityBuilder::CreateShip(int ownerId) {
+    uint32_t ship;
+    if (ownerId < 0) {
+        ship = EntityManager::CreateEntity();
+    } else {
+        ship = EntityManager::CreateEntity((uint32_t) ownerId);
+    }
+    
     Transform transform = Transform(ship, false,
         Math::Vector2(250, 250)
     );
@@ -14,7 +20,8 @@ uint32_t EntityBuilder::CreateShip() {
     Sprite sprite = Sprite(ship,
         destination,
         "./resources/Ship.png",
-        90.0f
+        90.0f, 0.0f, SDL_FLIP_NONE,
+        2, 1.0f
     );
 
     Controller controller = Controller(ship,
@@ -36,8 +43,10 @@ uint32_t EntityBuilder::CreateShip() {
         tags,
         0, 24.0f,
         std::function<void(Collider* self, Collider* other)>([](Collider* self, Collider* other) {
-            std::cout << "Collider event triggered on Entity " << self->OwnerId
+            if (std::find(other->Tags.begin(), other->Tags.end(), Collider::Tag::Enemy) != other->Tags.end()) {
+                std::cout << "Collider event triggered on Entity " << self->OwnerId
                       << " by Entity " << other->OwnerId << '\n';
+            }
         })
     );
 
@@ -61,7 +70,7 @@ uint32_t EntityBuilder::CreateShip() {
         debugDest,
         "./resources/DebugCircle.png",
         0.0f, 0.0f, SDL_FLIP_NONE,
-        1, 0.5f
+        2, 0.5f
     );
 
     EntityManager::AddComponent<Transform>(debugSprite, dTransform);
@@ -70,10 +79,17 @@ uint32_t EntityBuilder::CreateShip() {
     return ship;
 }
 
-uint32_t EntityBuilder::CreateAsteroid(Math::Vector2 initialPosition, Math::Vector2 initialVelocity) {
-    uint32_t asteroid = EntityManager::CreateEntity();
+uint32_t EntityBuilder::CreateAsteroid(Math::Vector2 initialPosition, Math::Vector2 initialVelocity,
+    float initialRotationVelocity, int ownerId) {
+    uint32_t asteroid;
+    if (ownerId < 0) {
+        asteroid = EntityManager::CreateEntity();
+    } else {
+        asteroid = EntityManager::CreateEntity((uint32_t) ownerId);
+    }
 
-    Transform transform = Transform(asteroid, false, initialPosition, initialVelocity);
+    Transform transform = Transform(asteroid, false, initialPosition, initialVelocity, Math::Vector2::Zero,
+    0.0f, initialRotationVelocity, 0.0f);
 
     SDL_Rect destination = SDL_Rect {
         (int)transform.GlobalLocation.Position.x - 48,
@@ -86,13 +102,15 @@ uint32_t EntityBuilder::CreateAsteroid(Math::Vector2 initialPosition, Math::Vect
         0.0f, 0.0f, SDL_FLIP_NONE, 1
     );
 
-    auto tags = std::vector<Collider::Tag>({Collider::Tag::Player});
+    auto tags = std::vector<Collider::Tag>({Collider::Tag::Enemy});
     Collider collider = Collider(asteroid,
         tags,
-        0, 24.0f,
+        0, 30.0f,
         std::function<void(Collider* self, Collider* other)>([](Collider* self, Collider* other) {
-            std::cout << "Collider event triggered on Entity " << self->OwnerId
+            if (std::find(other->Tags.begin(), other->Tags.end(), Collider::Tag::Player) != other->Tags.end()) {
+                std::cout << "Collider event triggered on Entity " << self->OwnerId
                       << " by Entity " << other->OwnerId << '\n';
+            }
         })
     );
 
@@ -107,9 +125,9 @@ uint32_t EntityBuilder::CreateAsteroid(Math::Vector2 initialPosition, Math::Vect
     );
 
     SDL_Rect debugDest = SDL_Rect {
-        (int)dTransform.GlobalLocation.Position.x - 48,
-        (int)dTransform.GlobalLocation.Position.y - 48,
-        (int)(48), (int)(48)
+        (int)dTransform.GlobalLocation.Position.x - 60,
+        (int)dTransform.GlobalLocation.Position.y - 60,
+        (int)(60), (int)(60)
     };
     Sprite dSprite = Sprite(debugSprite,
         debugDest,
