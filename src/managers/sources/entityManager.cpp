@@ -1,6 +1,7 @@
 #include "../entityManager.h"
 #include <future>
 #include <queue>
+#include <iostream>
 
 Application* EntityManager::mApp = nullptr;
 
@@ -19,19 +20,34 @@ void EntityManager::Initialize(Application* app) {
     RegisterComponentType<Controller>();
     RegisterComponentType<Collider>();
     RegisterComponentType<Spawner>();
+    RegisterComponentType<Fleeting>();
 }
 
 void EntityManager::Update(float deltaTime) {
     std::vector<std::future<void>> transformDependencyStage;
+    std::vector<std::future<void>> preTransformDependencyStage;
 
     ComponentPool<Controller>* controllers = GetPool<Controller>();
     if (controllers) {
         controllers->UpdateContents(Controller::Update, deltaTime);
     }
 
-    ComponentPool<Spawner>* spawners = GetPool<Spawner>();
-    if (spawners) {
-        spawners->UpdateContents(Spawner::Update, deltaTime);
+    preTransformDependencyStage.push_back(std::async(std::launch::async, [deltaTime]() {
+        ComponentPool<Spawner>* spawners = GetPool<Spawner>();
+        if (spawners) {
+            spawners->UpdateContents(Spawner::Update, deltaTime);
+        }
+    }));
+
+    preTransformDependencyStage.push_back(std::async(std::launch::async, [deltaTime]() {
+        ComponentPool<Fleeting>* fleetings = GetPool<Fleeting>();
+        if (fleetings) {
+            fleetings->UpdateContents(Fleeting::Update, deltaTime);
+        }
+    }));
+
+    for (auto& future : preTransformDependencyStage) {
+        future.get();
     }
 
     ComponentPool<Transform>* transforms = GetPool<Transform>();
@@ -99,6 +115,10 @@ void EntityManager::DestroyEntity(uint32_t entityId) {
     }
 }
 
+bool EntityManager::IsAlive(uint32_t entityId) {
+    return mDestroyBuffer.find(entityId) == mDestroyBuffer.end();
+}
+
 std::optional<uint32_t> EntityManager::GetParentEntity(uint32_t entityId) {
     auto it = mEntityParentMap.find(entityId);
     if (it == mEntityParentMap.end()) { return std::nullopt; }
@@ -121,8 +141,13 @@ void EntityManager::ClearBuffer() {
 
         std::optional<uint32_t> parentId = GetParentEntity(entityId);
         if (parentId.has_value()) {
-            GetChildrenEntities(parentId.value())->erase(entityId);
+            std::set<uint32_t>* children = GetChildrenEntities(parentId.value());
+            children->erase(entityId);
             mEntityParentMap.erase(entityId);
+        }
+
+        for (uint32_t childId : mEntityChildMap[entityId]) {
+            mEntityParentMap.erase(childId);
         }
         mEntityChildMap.erase(entityId);
     }

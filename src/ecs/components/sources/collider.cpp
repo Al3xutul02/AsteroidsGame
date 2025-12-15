@@ -26,10 +26,11 @@ static uint64_t GetSpatialHashKey(int gridX, int gridY);
 void Collider::Update(std::vector<Collider>& colliders, float deltaTime) {
     std::unordered_map<uint64_t, std::vector<CollisionSnapshot*>> spatialMap;
     std::vector<CollisionSnapshot> snapshots;
-    snapshots.reserve(colliders.size());
 
     CreateSnapshots(colliders, spatialMap, snapshots);
     for (const CollisionSnapshot& snapshotA : snapshots) {
+        if (!EntityManager::IsAlive(snapshotA.OwnerId)) continue;
+
         const float R = snapshotA.Radius;
         const float x = snapshotA.GlobalPosition.x;
         const float y = snapshotA.GlobalPosition.y;
@@ -46,11 +47,12 @@ void Collider::Update(std::vector<Collider>& colliders, float deltaTime) {
                 if (it == spatialMap.end()) continue;
 
                 for (CollisionSnapshot* snapshotB : it->second) {
-                    if (snapshotA.OwnerId == snapshotB->OwnerId) continue; 
+                    if (snapshotA.OwnerId == snapshotB->OwnerId) continue;
+                    if (!EntityManager::IsAlive(snapshotB->OwnerId)) continue;
                     
                     if (CheckCollision(snapshotA, *snapshotB)) {
-                        std::cout << "Collision between Entity " << snapshotA.OwnerId 
-                                    << " and Entity " << snapshotB->OwnerId << "\n";
+                        //std::cout << "Collision between Entity " << snapshotA.OwnerId 
+                        //            << " and Entity " << snapshotB->OwnerId << "\n";
                         snapshotA.OnCollision(snapshotA.Origin, snapshotB->Origin);
                     }
                 }
@@ -64,7 +66,10 @@ static void CreateSnapshots(
     std::unordered_map<uint64_t, std::vector<CollisionSnapshot*>>& spatialMap,
     std::vector<CollisionSnapshot>& snapshots)
 {
+    snapshots.reserve(colliders.size());
     for (Collider& collider : colliders) {
+        if (!EntityManager::IsAlive(collider.OwnerId)) { continue; }
+
         Transform* transform = EntityManager::GetComponent<Transform>(collider.OwnerId);
         if (transform == nullptr || !transform->Enabled) {
             std::cout << "Could not fetch Transform component for entity " << collider.OwnerId << '\n';

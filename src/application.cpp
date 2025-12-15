@@ -131,8 +131,8 @@ void Application::Update() {
     TimeManager::Update();
     EntityManager::Update(TimeManager::GetDeltaTime());
 
-    std::cout << "Current framerate: " << TimeManager::GetCurrentFPS()
-              << "; Delta Time: " << TimeManager::GetDeltaTime() << '\n';
+    //std::cout << "Current framerate: " << TimeManager::GetCurrentFPS()
+    //          << "; Delta Time: " << TimeManager::GetDeltaTime() << '\n';
 }
 
 void Application::GenerateOutput() {

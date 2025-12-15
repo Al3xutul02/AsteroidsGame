@@ -114,9 +114,12 @@ uint32_t EntityBuilder::CreateAsteroid(Math::Vector2 initialPosition, Math::Vect
         })
     );
 
+    Fleeting fleeting = Fleeting(asteroid, 2.0f);
+
     EntityManager::AddComponent<Transform>(asteroid, transform);
     EntityManager::AddComponent<Sprite>(asteroid, sprite);
     EntityManager::AddComponent<Collider>(asteroid, collider);
+    EntityManager::AddComponent<Fleeting>(asteroid, fleeting);
 
     // Test debug sprite
     uint32_t debugSprite = EntityManager::CreateEntity(asteroid);

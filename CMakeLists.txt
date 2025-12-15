@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 4.1.2)
-project(AsteroidsGame VERSION 0.4.2 LANGUAGES C CXX)
+project(AsteroidsGame VERSION 0.4.3 LANGUAGES C CXX)
 
 # ----------------------------------------
 # General setup
@@ -31,6 +31,7 @@ set(SOURCES src/application.cpp src/application.h
   src/ecs/components/controller.h src/ecs/components/sources/controller.cpp
   src/ecs/components/collider.h src/ecs/components/sources/collider.cpp
   src/ecs/components/spawner.h src/ecs/components/sources/spawner.cpp
+  src/ecs/components/fleeting.h src/ecs/components/sources/fleeting.cpp
   src/builders/entityBuilder.h src/builders/sources/entityBuilder.cpp)
 
 # ----------------------------------------

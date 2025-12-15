@@ -7,6 +7,7 @@
 #include <typeinfo>
 #include <memory>
 #include <optional>
+#include <cstdint>
 #include "../ecs/iComponentPool.h"
 #include "../ecs/componentPool.h"
 #include "../ecs/components/transform.h"
@@ -14,6 +15,7 @@
 #include "../ecs/components/controller.h"
 #include "../ecs/components/collider.h"
 #include "../ecs/components/spawner.h"
+#include "../ecs/components/fleeting.h"
 #include "../ecs/components/abstractions/component.h"
 
 class Application;
@@ -27,6 +29,7 @@ public:
     static uint32_t CreateEntity();
     static uint32_t CreateEntity(uint32_t parentEntityId);
     static void DestroyEntity(uint32_t entityId);
+    static bool IsAlive(uint32_t entityId);
 
     static std::optional<uint32_t> GetParentEntity(uint32_t entityId);
     static std::set<uint32_t>* GetChildrenEntities(uint32_t entityId);
