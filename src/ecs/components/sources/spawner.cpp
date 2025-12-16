@@ -56,7 +56,8 @@ void Spawner::Update(std::vector<Spawner>& spawners, float deltaTime) {
                 centerSpawnVelocity.x * sinAngle + centerSpawnVelocity.y * cosAngle
             );
 
-            uint32_t asteroidId = EntityBuilder::CreateAsteroid(spawnLocation, rotatedSpawnVelocity, rotationVelocity, spawner.OwnerId);
+            uint32_t asteroidId = EntityBuilder::CreateAsteroid(spawnLocation, rotatedSpawnVelocity, rotationVelocity,
+                spawner.DestroyTime, spawner.OwnerId);
         }
 
         if (status == TimerStatus::Stopped ||

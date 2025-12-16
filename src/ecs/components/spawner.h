@@ -13,6 +13,7 @@ struct Spawner : Component {
     Math::Vector2 RotationSpeed;
     float SpawnOffset;
     float SpawnTime;
+    float DestroyTime;
     uint32_t TimerId;
 
     inline Spawner(uint32_t ownerId,
@@ -20,11 +21,12 @@ struct Spawner : Component {
         const Math::Vector2& spawnSpeed,
         const Math::Vector2& directionOffsetAngle,
         const Math::Vector2& rotationSpeed,
-        float spawnOffset, float spawnTime) : Component(ownerId),
+        float spawnOffset, float spawnTime, float destroyTime) : Component(ownerId),
         Window(window),
         SpawnSpeed(spawnSpeed), DirectionOffsetAngle(directionOffsetAngle),
         RotationSpeed(rotationSpeed),
-        SpawnOffset(spawnOffset), SpawnTime(spawnTime), TimerId(TimeManager::CreateTimer(spawnTime)) {}
+        SpawnOffset(spawnOffset), SpawnTime(spawnTime), DestroyTime(destroyTime),
+        TimerId(TimeManager::CreateTimer(spawnTime)) {}
 
     static void Update(std::vector<Spawner>& spawners, float deltaTime);
 };

@@ -50,10 +50,10 @@ void Collider::Update(std::vector<Collider>& colliders, float deltaTime) {
                     if (snapshotA.OwnerId == snapshotB->OwnerId) continue;
                     if (!EntityManager::IsAlive(snapshotB->OwnerId)) continue;
                     
-                    if (CheckCollision(snapshotA, *snapshotB)) {
-                        //std::cout << "Collision between Entity " << snapshotA.OwnerId 
-                        //            << " and Entity " << snapshotB->OwnerId << "\n";
+                    if (snapshotA.OwnerId < snapshotB->OwnerId &&
+                        CheckCollision(snapshotA, *snapshotB)) {
                         snapshotA.OnCollision(snapshotA.Origin, snapshotB->Origin);
+                        snapshotB->OnCollision(snapshotB->Origin, snapshotA.Origin);
                     }
                 }
             }

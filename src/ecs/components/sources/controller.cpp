@@ -2,6 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include "../../../managers/entityManager.h"
+#include "../../../builders/entityBuilder.h"
 
 void Controller::Update(std::vector<Controller>& controllers, float deltaTime) {
     for (Controller& controller : controllers) {
@@ -14,7 +15,7 @@ void Controller::Update(std::vector<Controller>& controllers, float deltaTime) {
         if (!controller.Enabled) { continue; }
 
         Math::Vector2 direction = Math::Vector2::Zero;
-        for (auto& [key, control] : controller.KeyMap) {
+        for (auto& [control, key] : controller.KeyMap) {
             if (!InputManager::IsKeyPressed(key)) { continue; }
             switch(control) {
                 case Control::Up:
@@ -62,5 +63,32 @@ void Controller::Update(std::vector<Controller>& controllers, float deltaTime) {
             Math::Normalize(InputManager::GetMousePosition() - transform->Location.Position)
         );
         transform->Rotation.Angle = mouseAngle;
+
+        std::optional<TimerStatus> statusFetch = TimeManager::GetTimerStatus(controller.BulletTimerId);
+        if (!statusFetch.has_value()) {
+            std::cout << "Error: Controller component of entity " << controller.OwnerId
+                      << " does not have a timer...";
+            continue;
+        }
+
+        TimerStatus status = statusFetch.value();
+        if (InputManager::IsKeyPressed(controller.KeyMap[Control::Fire]) &&
+            (status == TimerStatus::Stopped || status == TimerStatus::Finished))
+        {
+            Math::Vector2 bulletDirection = Math::Normalize(
+                InputManager::GetMousePosition() - transform->Location.Position
+            );
+            Math::Vector2 bulletVelocity = bulletDirection * controller.BulletSpeed;
+
+            uint32_t bulletId = EntityBuilder::CreateBullet(
+                transform->Location.Position + bulletDirection * 30.0f,
+                bulletVelocity,
+                transform->Rotation.Angle,
+                2.0f,
+                controller.OwnerId
+            );
+
+            TimeManager::StartTimer(controller.BulletTimerId);
+        }
     }
 }

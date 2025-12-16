@@ -106,6 +106,7 @@ void EntityManager::DestroyEntity(uint32_t entityId) {
         }
 
         mDestroyBuffer.insert(currentId);
+        std::cout << "EntityManager: Marked entity " << currentId << " for destruction.\n";
         auto it = mEntityChildMap.find(currentId);
         if (it != mEntityChildMap.end()) {
             for (uint32_t childId : it->second) {
