@@ -12,6 +12,9 @@
 bool Application::Initialize(float targetFPS) {
     this->InitializeEvents();
     bool success = this->InitializeSDL();
+    if (!success) {
+        return false;
+    }
 
     EntityManager::Initialize(this);
     TimeManager::Initialize(this, targetFPS);

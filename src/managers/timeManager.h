@@ -1,5 +1,6 @@
 #pragma once
 #include <unordered_map>
+#include <vector>
 #include <optional>
 #include <SDL3/SDL.h>
 
@@ -31,14 +32,15 @@ public:
 
 private:
     struct Timer {
+        uint32_t Id;
         float Limit;
         float CurrentTime;
         TimerStatus Status;
 
         inline Timer(
-            float limit, float currentTime = 0.0f,
+            uint32_t id, float limit, float currentTime = 0.0f,
             TimerStatus status = TimerStatus::Stopped
-        ) : Limit(limit), CurrentTime(currentTime), Status(status) {}
+        ) : Id(id), Limit(limit), CurrentTime(currentTime), Status(status) {}
     };
 
     static Application* mApp;
@@ -47,7 +49,6 @@ private:
     static uint64_t mTicksCount;
 
     static uint32_t mTimerCount;
-    static uint32_t mLastId;
     static std::unordered_map<uint32_t, uint32_t> mTimerIdMap;
     static std::vector<Timer> mTimers;
 };

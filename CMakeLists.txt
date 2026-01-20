@@ -7,8 +7,8 @@ project(AsteroidsGame VERSION 0.4.3 LANGUAGES C CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
-set(CXX_STANDARD 20)
-set(CXX_STANDARD_REQUIRED true)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED true)
 
 include(CTest)
 enable_testing()
@@ -77,7 +77,7 @@ target_compile_features(AsteroidsGame
     PRIVATE cxx_std_20
 )
 
-target_compile_options(AsteroidsGame INTERFACE
-  "$<${gcc_like_cxx}:$<BUILD_INTERFACE:-Wall;-Werror;-Wextra;-Wshadow;-Wformat=2;-Wunused>>"
-  "$<${msvc_cxx}:$<BUILD_INTERFACE:-W3>>"
-)
+#target_compile_options(AsteroidsGame PRIVATE
+  #"$<${gcc_like_cxx}:$<BUILD_INTERFACE:-Wall;-Werror;-Wextra;-Wshadow;-Wformat=2;-Wunused>>"
+  #"$<${msvc_cxx}:$<BUILD_INTERFACE:-W3>>"
+#)

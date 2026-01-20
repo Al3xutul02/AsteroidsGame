@@ -1,6 +1,7 @@
 #include "../controller.h"
 #include <iostream>
 #include <algorithm>
+#include <cmath>
 #include "../../../managers/entityManager.h"
 #include "../../../builders/entityBuilder.h"
 

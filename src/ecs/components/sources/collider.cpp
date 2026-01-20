@@ -1,6 +1,7 @@
 #include "../collider.h"
 #include <iostream>
 #include <unordered_map>
+#include <cmath>
 #include "../../../managers/entityManager.h"
 
 struct CollisionSnapshot {

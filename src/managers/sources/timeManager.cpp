@@ -6,7 +6,6 @@ float TimeManager::mTargetFPS = 0.0;
 float TimeManager::mDeltaTime = 0.0;
 uint64_t TimeManager::mTicksCount = 0;
 uint32_t TimeManager::mTimerCount = 0;
-uint32_t TimeManager::mLastId = 0;
 std::unordered_map<uint32_t, uint32_t> TimeManager::mTimerIdMap = std::unordered_map<uint32_t, uint32_t>();
 std::vector<TimeManager::Timer> TimeManager::mTimers = std::vector<TimeManager::Timer>();
 
@@ -39,13 +38,13 @@ void TimeManager::Shutdown() {
 }
 
 uint32_t TimeManager::CreateTimer(float limit) {
-    uint32_t newTimer = mTimerCount++;
+    uint32_t newTimerId = mTimerCount++;
 
-    mTimers.emplace_back(Timer(limit));
-    mTimerIdMap[newTimer] = mTimers.size() - 1;
-    mLastId = newTimer;
+    Timer timer(newTimerId, limit);
+    mTimers.emplace_back(timer);
+    mTimerIdMap[newTimerId] = mTimers.size() - 1;
 
-    return newTimer;
+    return newTimerId;
 }
 
 bool TimeManager::TimerExists(uint32_t timerId) {
@@ -95,7 +94,7 @@ void TimeManager::SetTimerLimit(uint32_t timerId, float limit) {
 void TimeManager::SetTimerCurrentTime(uint32_t timerId, float currentTime) {
     if (!TimerExists(timerId)) { return; }
 
-    mTimers[mTimerIdMap[timerId]].Limit = currentTime;
+    mTimers[mTimerIdMap[timerId]].CurrentTime = currentTime;
 }
 
 void TimeManager::DestroyTimer(uint32_t timerId) {
@@ -105,8 +104,9 @@ void TimeManager::DestroyTimer(uint32_t timerId) {
     uint32_t lastIndex = mTimers.size() - 1;
 
     if (indexToRemove != lastIndex) {
-        mTimers[indexToRemove] = mTimers[lastIndex];
-        mTimerIdMap[mLastId] = indexToRemove;
+        uint32_t lastId = mTimers[lastIndex].Id;
+        mTimers[indexToRemove] = std::move(mTimers[lastIndex]);
+        mTimerIdMap[lastId] = indexToRemove;
     }
 
     mTimers.pop_back();
