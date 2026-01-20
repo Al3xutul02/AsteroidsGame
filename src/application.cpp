@@ -9,6 +9,23 @@
 #include "ecs/components/collider.h"
 #include "builders/entityBuilder.h"
 
+Application* Application::mInstance = nullptr;
+
+static void CreateGameObjects(SDL_Window* window) {
+    // Player ship
+    uint32_t ship = EntityBuilder::CreateShip();
+
+    // Asteroid Spawner
+    uint32_t asteroidsSpawner = EntityManager::CreateEntity();
+
+    Spawner spawner = Spawner(asteroidsSpawner, window,
+        Math::Vector2(100, 200), Math::Vector2(-30, 30), Math::Vector2(10, 30),
+        100.0f, 0.5f, 15.0f
+    );
+
+    EntityManager::AddComponent<Spawner>(asteroidsSpawner, spawner);
+}
+
 bool Application::Initialize(float targetFPS) {
     this->InitializeEvents();
     bool success = this->InitializeSDL();
@@ -21,18 +38,7 @@ bool Application::Initialize(float targetFPS) {
     InputManager::Initialize(this);
     RenderManager::Initialize(this, this->mWindow);
 
-    // Player ship
-    uint32_t ship = EntityBuilder::CreateShip();
-
-    // Asteroid Spawner
-    uint32_t asteroidsSpawner = EntityManager::CreateEntity();
-
-    Spawner spawner = Spawner(asteroidsSpawner, this->mWindow,
-        Math::Vector2(100, 200), Math::Vector2(-30, 30), Math::Vector2(10, 30),
-        100.0f, 0.5f, 15.0f
-    );
-
-    EntityManager::AddComponent<Spawner>(asteroidsSpawner, spawner);
+    CreateGameObjects(this->mWindow);
 
     RenderManager::LoadTextures({
         "./resources/Ship.png",
@@ -41,6 +47,7 @@ bool Application::Initialize(float targetFPS) {
         "./resources/Bullet.png"
     });
 
+    Application::mInstance = this;
     this->isRunning = success;
     return success;
 }
@@ -67,8 +74,15 @@ void Application::Notify(AppEvent event) { eventMap[event](); }
 
 void Application::InitializeEvents() {
     eventMap = std::unordered_map<AppEvent, std::function<void()>>();
-    eventMap[AppEvent::CloseApplication] = [&]() {
+    eventMap[AppEvent::Exit] = [&]() {
         this->isRunning = false;
+    };
+
+    eventMap[AppEvent::Restart] = [&]() {
+        // Delete all entities
+        EntityManager::DestroyAllEntities();
+        // Recreate game objects
+        CreateGameObjects(this->mWindow);
     };
 }
 

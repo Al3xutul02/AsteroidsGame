@@ -6,7 +6,7 @@
 #include <SDL3_image/SDL_image.h>
 
 enum AppEvent : uint8_t {
-    CloseApplication
+    Exit, Restart
 };
 
 class Application {
@@ -17,7 +17,10 @@ public:
 
     void Notify(AppEvent event);
 
+    static inline Application* GetInstance() { return mInstance; }
+
 private:
+    static Application* mInstance;
     SDL_Window* mWindow;
     bool isRunning;
 

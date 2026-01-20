@@ -29,6 +29,7 @@ public:
     static uint32_t CreateEntity();
     static uint32_t CreateEntity(uint32_t parentEntityId);
     static void DestroyEntity(uint32_t entityId);
+    static void DestroyAllEntities();
     static bool IsAlive(uint32_t entityId);
 
     static std::optional<uint32_t> GetParentEntity(uint32_t entityId);

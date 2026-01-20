@@ -1,4 +1,5 @@
 #include "../entityBuilder.h"
+#include "../../application.h"
 
 uint32_t EntityBuilder::CreateShip(int ownerId) {
     uint32_t ship;
@@ -46,10 +47,7 @@ uint32_t EntityBuilder::CreateShip(int ownerId) {
         std::function<void(Collider* self, Collider* other)>([](Collider* self, Collider* other) {
             if (std::find(other->Tags.begin(), other->Tags.end(), Collider::Tag::Enemy) != other->Tags.end()) {
                 std::cout << "Player Ship hit by Asteroid! Ship ID " << self->OwnerId << '\n';
-                TimeManager::DestroyTimer(
-                    EntityManager::GetComponent<Controller>(self->OwnerId)->BulletTimerId
-                );
-                EntityManager::DestroyEntity(self->OwnerId);
+                Application::GetInstance()->Notify(AppEvent::Restart);
             }
         })
     );

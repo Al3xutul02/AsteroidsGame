@@ -116,6 +116,10 @@ void EntityManager::DestroyEntity(uint32_t entityId) {
     }
 }
 
+void EntityManager::DestroyAllEntities() {
+    for (auto [parent, children] : mEntityChildMap) { DestroyEntity(parent); }
+}
+
 bool EntityManager::IsAlive(uint32_t entityId) {
     return mDestroyBuffer.find(entityId) == mDestroyBuffer.end();
 }

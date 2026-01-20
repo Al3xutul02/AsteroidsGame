@@ -23,7 +23,7 @@ void InputManager::ProcessInput() {
     while(SDL_PollEvent(&event)) {
         switch (event.type) {
             case SDL_EVENT_QUIT:
-                mApp->Notify(AppEvent::CloseApplication);
+                mApp->Notify(AppEvent::Exit);
                 break;
         }
     }
@@ -33,7 +33,7 @@ void InputManager::ProcessInput() {
     SDL_GetMouseState(&mMousePosition.x, &mMousePosition.y);
 
     if (IsKeyPressed(Key::SDL_SCANCODE_ESCAPE)) {
-        mApp->Notify(AppEvent::CloseApplication);
+        mApp->Notify(AppEvent::Exit);
     }
 }
 
